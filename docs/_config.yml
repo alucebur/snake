@@ -1,0 +1,4 @@
+theme: jekyll-theme-slate
+title: Alucebur Was Here
+description: Python implementation of the classic "Snake" game
+show_downloads: ["true"]
