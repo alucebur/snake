@@ -43,6 +43,7 @@ Requires Python 3.6+ (with pip).
 - Pip:
 
         pip install -r requirements.txt
+
 ---
 
 ### License
