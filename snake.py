@@ -6,6 +6,7 @@ Classic look:
 - snake_game.apple.sprite = None
 
 TODO:
+- add win condition.
 - intro screen with settings (volume, classic mode).
 - score file, top3 scores.
 """
@@ -22,6 +23,7 @@ BGCOLOR = (40, 40, 40)
 FGCOLOR = (200, 200, 200)
 GREEN = (0, 200, 0)
 RED = (200, 0, 0)
+BLACK = (0, 0, 0)
 FPS = 10  # Lower value for lower speed
 DIRS = ("up", "down", "left", "right")
 
@@ -32,6 +34,7 @@ class Game:
         self.win = None
         self.clock = None
         self.running = True
+        self.on_pause = False
         self.gameover = False
         self.show_grid = False
         self.fonts = {}
@@ -101,7 +104,7 @@ class Game:
             self.running = False
 
         # Snake control
-        elif event.type == pygame.KEYDOWN:
+        elif event.type == pygame.KEYDOWN and not self.on_pause:
             if (event.key == pygame.K_UP and
                     self.sneik.direction != "down"):
                 self.sneik.direction = "up"
@@ -118,33 +121,40 @@ class Game:
             # Show grid
             elif event.key == pygame.K_g:
                 self.show_grid = not self.show_grid
+            elif event.key == pygame.K_p:
+                self.pause()
+        elif event.type == pygame.KEYDOWN and self.on_pause:
+            if event.key == pygame.K_p:
+                self.unpause()
 
     def on_loop(self):
         """Move snake and check interactions."""
-        # Moves snake
-        self.sneik.move()
+        if not self.on_pause:
+            # Moves snake
+            self.sneik.move()
 
-        # Checks if snake crashed into itself
-        if self.sneik.check_collision():
-            self.sounds['crash'].play()
-            self.gameover = True
+            # Checks if snake crashed into itself
+            if self.sneik.check_collision():
+                self.sounds['crash'].play()
+                self.gameover = True
 
-        # Checks if snake is feeding
-        self.check_food()
+            # Checks if snake is feeding
+            self.check_food()
 
     def on_render(self):
         """Draw window."""
-        # Draw background
-        if self.bg_img:
-            self.win.blit(self.bg_img, (0, 0))
-        else:  # Classic look
-            self.win.fill(BGCOLOR)
+        if not self.on_pause:
+            # Draw background
+            if self.bg_img:
+                self.win.blit(self.bg_img, (0, 0))
+            else:  # Classic look
+                self.win.fill(BGCOLOR)
 
-        # Draw snake, apple, grid
-        self.sneik.draw(self.win, self.gameover)
-        self.apple.draw(self.win)
-        if self.show_grid:
-            self.draw_grid()
+            # Draw snake, apple, grid
+            self.sneik.draw(self.win, self.gameover)
+            self.apple.draw(self.win)
+            if self.show_grid:
+                self.draw_grid()
 
         self.clock.tick(FPS)
         pygame.display.update()
@@ -166,6 +176,34 @@ class Game:
             if self.gameover and self.running:
                 self.gameover_screen()
         self.on_cleanup()
+
+    def pause(self):
+        """Pause game and render pause screen."""
+        # Pauses game
+        pygame.mixer.music.pause()
+        self.on_pause = True
+
+        # Darkens the screen
+        surf = pygame.Surface((WIDTH, HEIGHT))
+        surf.set_alpha(160)
+        surf.fill(BLACK)
+        self.win.blit(surf, (0, 0))
+
+        # Show pause message
+        text_surf, text_rect = self.fonts['big'].render("Paused", FGCOLOR)
+        text_rect.center = (WIDTH//2, HEIGHT//2 - 40)
+        self.win.blit(text_surf, text_rect)
+
+        # Show current score
+        text_surf, text_rect = self.fonts['small'].render(
+            f"Score: {len(self.sneik.body)}", FGCOLOR)
+        text_rect.center = (WIDTH//2, HEIGHT//2 + 20)
+        self.win.blit(text_surf, text_rect)
+
+    def unpause(self):
+        """Unpause game."""
+        pygame.mixer.music.unpause()
+        self.on_pause = False
 
     def reset_game(self):
         """Reset stats to start a new game."""

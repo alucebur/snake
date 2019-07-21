@@ -16,6 +16,7 @@ This is a Python implementation of the classic game "Snake".
 - Feed the snake with apples without crashing into itself.
 - If the snake leaves the screen, it will appear at the opposite edge.
 - Press 'Escape' to exit.
+- Press 'P' to pause the game. Press 'P' again to unpause.
 - Press 'G' to show a grid.
 
 ---
