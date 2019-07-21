@@ -380,6 +380,9 @@ class Snake:
         elif ((current_dir == 'right' and previous_dir == 'down') or
               (current_dir == 'up' and previous_dir == 'left')):
             piece = '7'
+        else:
+            # Head crash with neck, movement too fast
+            piece = None
 
         return piece
 
