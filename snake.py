@@ -1,10 +1,13 @@
 """Classic Snake game implemented in Python.
 
+Classic look:
+- snake_game.bg_img = None
+- snake_game.sneik.skin = None
+- snake_game.apple.sprite = None
+
 TODO:
-- remove directions, calculate skin with maths.
 - intro screen with settings (volume, classic mode).
 - score file, top3 scores.
-- refactor to avoid several nested if.
 """
 import os
 import random
@@ -19,7 +22,7 @@ BGCOLOR = (40, 40, 40)
 FGCOLOR = (200, 200, 200)
 GREEN = (0, 200, 0)
 RED = (200, 0, 0)
-FPS = 10  # Lower value for lower speed
+FPS = 5  # Lower value for lower speed
 DIRS = ("up", "down", "left", "right")
 
 
@@ -338,6 +341,48 @@ class Snake:
         self.skin['L'] = pygame.transform.rotate(curve_rd, 90)
         self.skin['r'] = curve_rd
 
+    @staticmethod
+    def get_head_skin(current_dir):
+        """Return piece to draw for the head.
+        :param current_dir: str.
+        :returns: str."""
+        return 'head-' + current_dir
+
+    @staticmethod
+    def get_tail_skin(previous_dir):
+        """Return piece to draw for the head.
+        :param previous_dir: str.
+        :returns: str."""
+        return 'tail-' + previous_dir
+
+    @staticmethod
+    def get_body_skin(current_dir, previous_dir):
+        """Return piece to draw for the body.
+        :param current_dir: str.
+        :param previous_dir: str."""
+        # Straight body part
+        if current_dir == previous_dir:
+            if current_dir in ('up', 'down'):
+                piece = 'vertical'
+            else:
+                piece = 'horizontal'
+
+        # Curved body part
+        elif ((current_dir == 'right' and previous_dir == 'up') or
+              (current_dir == 'down' and previous_dir == 'left')):
+            piece = 'J'
+        elif ((current_dir == 'left' and previous_dir == 'up') or
+              (current_dir == 'down' and previous_dir == 'right')):
+            piece = 'L'
+        elif ((current_dir == 'left' and previous_dir == 'down') or
+              (current_dir == 'up' and previous_dir == 'right')):
+            piece = 'r'
+        elif ((current_dir == 'right' and previous_dir == 'down') or
+              (current_dir == 'up' and previous_dir == 'left')):
+            piece = '7'
+
+        return piece
+
     def draw(self, win, gameover):
         """Draw the snake on the screen.
         :param win: Screen surface.
@@ -355,45 +400,27 @@ class Snake:
             # Paints skin
             else:
                 # Head
+                prev_dir = self.body[i-1][1]
                 if i == 0:
-                    piece = 'head-' + cur_dir
-                    win.blit(self.skin[piece], rectangle)
+                    piece = self.get_head_skin(cur_dir)
 
                 # Tail
                 elif i == len(self.body) - 1:
                     if not false_tail:
-                        piece = 'tail-' + self.body[i-1][1]
-                        win.blit(self.skin[piece], rectangle)
+                        piece = self.get_tail_skin(prev_dir)
+                    else:
+                        piece = None
 
                 # Body
                 else:
-                    next_dir = self.body[i-1][1]
                     # Check if snake just ate an apple, generating a false tail
                     if self.body[i+1][0] == self.get_head() and not gameover:
                         false_tail = True
-                        piece = 'tail-' + next_dir
-                        win.blit(self.skin[piece], rectangle)
+                        piece = self.get_tail_skin(prev_dir)
                     else:
-                        # Straight body part
-                        if cur_dir == next_dir:
-                            if cur_dir in ('up', 'down'):
-                                win.blit(self.skin['vertical'], rectangle)
-                            else:
-                                win.blit(self.skin['horizontal'], rectangle)
-
-                        # Curved body part
-                        elif ((cur_dir == 'right' and next_dir == 'up') or
-                              (cur_dir == 'down' and next_dir == 'left')):
-                            win.blit(self.skin['J'], rectangle)
-                        elif ((cur_dir == 'left' and next_dir == 'up') or
-                              (cur_dir == 'down' and next_dir == 'right')):
-                            win.blit(self.skin['L'], rectangle)
-                        elif ((cur_dir == 'left' and next_dir == 'down') or
-                              (cur_dir == 'up' and next_dir == 'right')):
-                            win.blit(self.skin['r'], rectangle)
-                        elif ((cur_dir == 'right' and next_dir == 'down') or
-                              (cur_dir == 'up' and next_dir == 'left')):
-                            win.blit(self.skin['7'], rectangle)
+                        piece = self.get_body_skin(cur_dir, prev_dir)
+                if piece:
+                    win.blit(self.skin[piece], rectangle)
 
 
 class Apple:
@@ -403,10 +430,10 @@ class Apple:
         self.sprite = sprite
         self.new(snake_body)
 
-    def new(self, snake):
+    def new(self, snake_body):
         """Create new random apple. It can't be in snake body.
-        :param snake: Snake's body."""
-        body_coordinates = [member[0] for member in snake]
+        :param snake: List of 2-tuples (x,y coordinates)."""
+        body_coordinates = [member[0] for member in snake_body]
         while True:
             self.pos = (random.randint(0, WIDTH//BLOCK[0] - 1),
                         random.randint(0, HEIGHT//BLOCK[1] - 1))
