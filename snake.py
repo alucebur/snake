@@ -22,7 +22,7 @@ BGCOLOR = (40, 40, 40)
 FGCOLOR = (200, 200, 200)
 GREEN = (0, 200, 0)
 RED = (200, 0, 0)
-FPS = 5  # Lower value for lower speed
+FPS = 10  # Lower value for lower speed
 DIRS = ("up", "down", "left", "right")
 
 

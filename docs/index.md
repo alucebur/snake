@@ -3,6 +3,7 @@
 This is a Python implementation of the classic game "Snake".
 
 - [How to play](#how-to-play)
+- [Screenshot](#screenshot)
 - [Libraries used](#libraries-used)
 - [Requirements](#requirements)
 - [Installation](#installation)
@@ -18,6 +19,9 @@ This is a Python implementation of the classic game "Snake".
 - Press 'G' to show a grid.
 
 ---
+
+### Screenshot
+![Game screenshot](https://i.imgur.com/fMgL2xd.png)
 
 ### Libraries used
 - os
