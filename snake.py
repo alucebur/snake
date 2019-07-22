@@ -44,7 +44,7 @@ DEFAULT_KEYMAPPING = {
     'accept': pygame.K_RETURN
 }
 PUN_FILE = "puns.json"
-CONFIG_FILE = "settings.json"
+CONFIG_FILE = "settings2.json"
 
 
 class Game:
