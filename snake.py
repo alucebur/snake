@@ -1,7 +1,6 @@
 """Classic Snake game implemented in Python.
 
 TODO:
-- wrap joke text.
 - highscores screen, enter initials if highscore and save to file.
 - intro screen with settings (volume, classic mode, rebind keys).
 - add win condition.
@@ -337,17 +336,35 @@ class Game:
                 text_rect.center = WIDTH//2, HEIGHT//2 + 40
                 self.win.blit(text_surf, text_rect)
 
-                self.render_wrapped_text(joke)
+                self.render_wrapped_text(joke, "mini", FGCOLOR, WIDTH//2,
+                                         HEIGHT-150, WIDTH-150)
 
                 self.clock.tick(FPS)
                 pygame.display.update()
 
-    def render_wrapped_text(self, text):
+    def render_wrapped_text(self, text, font, color,
+                            center_x, pos_y, max_width):
         """Render text using several lines if not fit in surface."""
-        text_surf, text_rect = self.data['fonts']['mini'].render(
-            text, FGCOLOR)
-        text_rect.center = WIDTH//2, HEIGHT - 150
-        self.win.blit(text_surf, text_rect)
+        words = text.split()
+        lines = []
+        # Separate text into lines
+        while words:
+            line_words = []
+            while words:
+                line_words.append(words.pop(0))
+                _, _, line_w, _ = self.data['fonts'][font].get_rect(
+                    ' '.join(line_words + words[:1]))
+                if line_w > max_width:
+                    break
+            lines.append(' '.join(line_words))
+
+        # Write the lines on the screen
+        for line in lines:
+            text_surf, text_rect = self.data['fonts'][font].render(
+                line, color)
+            text_rect.centerx, text_rect.y = center_x, pos_y
+            self.win.blit(text_surf, text_rect)
+            pos_y = pos_y + text_rect.h + 10
 
     def draw_grid(self):
         """Draw grid on screen, BLOCK sized rectangles."""
