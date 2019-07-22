@@ -27,6 +27,7 @@ This is a Python implementation of the classic game "Snake".
 ### Libraries used
 - os
 - random
+- queue
 - pygame
 
 ---

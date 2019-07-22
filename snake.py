@@ -6,13 +6,13 @@ Classic look:
 - snake_game.apple.sprite = None
 
 TODO:
-- avoid eating neck with queue
 - add win condition.
 - intro screen with settings (volume, classic mode).
 - score file, top3 scores.
 """
 import os
 import random
+import queue
 import pygame
 import pygame.freetype
 
@@ -26,7 +26,9 @@ GREEN = (0, 200, 0)
 RED = (200, 0, 0)
 BLACK = (0, 0, 0)
 FPS = 10  # Lower value for lower speed
-DIRS = ("up", "down", "left", "right")
+KEY_MAPPING = {pygame.K_UP: "up", pygame.K_DOWN: "down",
+               pygame.K_LEFT: "left", pygame.K_RIGHT: "right"}
+OPPOSITE = {"up": "down", "down": "up", "left": "right", "right": "left"}
 
 
 class Game:
@@ -100,22 +102,12 @@ class Game:
                  event.key == pygame.K_ESCAPE)):
             self.status = 'stopping'
 
-        # Snake control
         elif event.type == pygame.KEYDOWN and self.status == 'running':
-            if (event.key == pygame.K_UP and
-                    self.sneik.direction != "down"):
-                self.sneik.direction = "up"
-            elif (event.key == pygame.K_DOWN and
-                  self.sneik.direction != "up"):
-                self.sneik.direction = "down"
-            elif (event.key == pygame.K_LEFT and
-                  self.sneik.direction != "right"):
-                self.sneik.direction = "left"
-            elif (event.key == pygame.K_RIGHT and
-                  self.sneik.direction != "left"):
-                self.sneik.direction = "right"
+            # Snake control, add new direction to queue
+            if event.key in KEY_MAPPING:
+                self.sneik.queue_direction(event)
 
-            # Show grid
+            # Game control
             elif event.key == pygame.K_g:
                 self.show_grid = not self.show_grid
             elif event.key == pygame.K_p:
@@ -278,6 +270,8 @@ class Snake:
     """Define player's snake. Body coordinates are in BLOCK units."""
     def __init__(self):
         self.direction = None
+        # FIFO queue, buffer of direction changes
+        self.direction_queue = queue.Queue(maxsize=3)
         self.body = []
         self.color = GREEN
         self.skin = {}
@@ -287,7 +281,7 @@ class Snake:
         """Build a new body for the snake (head & tail)."""
         pos_x = random.randint(0, WIDTH//BLOCK[0] - 1)
         pos_y = random.randint(0, HEIGHT//BLOCK[1] - 1)
-        self.direction = random.choice(DIRS)
+        self.direction = random.choice(list(KEY_MAPPING.values()))
         self.body = [((pos_x, pos_y), self.direction),
                      ((pos_x, pos_y), self.direction)]
 
@@ -302,9 +296,26 @@ class Snake:
         :returns: 2-tuple with the position of the head."""
         return self.body[0][0]
 
+    def queue_direction(self, event):
+        """Add new directions to the queue depending on keys pressed."""
+        try:
+            self.direction_queue.put_nowait(KEY_MAPPING[event.key])
+        except queue.Full:
+            pass
+
     def move(self):
         """Move snake by inserting a new head and removing tail."""
         head_x, head_y = self.get_head()
+
+        # Try to get new direction from queue
+        try:
+            new_dir = self.direction_queue.get_nowait()
+        except queue.Empty:
+            new_dir = self.direction
+        if new_dir != OPPOSITE[self.direction]:  # Avoid 180º turns
+            self.direction = new_dir
+
+        # Move according to direction
         if self.direction == 'up':
             self.body.insert(0, ((head_x, head_y - 1), self.direction))
             self.body.pop()
