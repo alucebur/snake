@@ -1,7 +1,7 @@
 """Classic Snake game implemented in Python.
 
 TODO:
-- wrap joke text and change font.
+- wrap joke text.
 - highscores screen, enter initials if highscore and save to file.
 - intro screen with settings (volume, classic mode, rebind keys).
 - add win condition.
@@ -113,6 +113,26 @@ class Game:
                 self.data['keymapping']['direction'][int(key)] = value
             self.data['highscores'] = config['highscores']
 
+    def load_fonts(self):
+        """Load fonts."""
+        self.data['fonts'] = {}
+        self.data['fonts']['mini'] = pygame.freetype.Font(
+            "assets/fonts/HanSrf.ttf", 25)
+        self.data['fonts']['small'] = pygame.freetype.Font(
+            "assets/fonts/Excalibur Nouveau.ttf", 30)
+        self.data['fonts']['big'] = pygame.freetype.Font(
+            "assets/fonts/Jacked.ttf", 100)
+
+    def load_sounds(self):
+        """Load sounds and set volume."""
+        self.data['sounds'] = {}
+        self.data['sounds']['eat'] = pygame.mixer.Sound(
+            "assets/audio/snake-bite.wav")
+        self.data['sounds']['crash'] = pygame.mixer.Sound(
+            "assets/audio/snake-crash.wav")
+        for audio in self.data['sounds'].values():
+            audio.set_volume(self.data['settings']['sound'])
+
     def on_init(self):
         """Initialize game, set variables, load assets."""
         # Loading pygame
@@ -130,23 +150,8 @@ class Game:
         # Loading assets
         game_icon = pygame.image.load("assets/icon.png")
         pygame.display.set_icon(game_icon)
-        # Fonts
-        self.data['fonts'] = {}
-        self.data['fonts']['small'] = pygame.freetype.Font(
-            "assets/fonts/Excalibur Nouveau.ttf", 30)
-        self.data['fonts']['mini'] = pygame.freetype.Font(
-            "assets/fonts/Excalibur Nouveau.ttf", 20)
-        self.data['fonts']['big'] = pygame.freetype.Font(
-            "assets/fonts/Jacked.ttf", 100)
-        # Sounds
-        self.data['sounds'] = {}
-        self.data['sounds']['eat'] = pygame.mixer.Sound(
-            "assets/audio/snake-bite.wav")
-        self.data['sounds']['crash'] = pygame.mixer.Sound(
-            "assets/audio/snake-crash.wav")
-        for audio in self.data['sounds'].values():
-            audio.set_volume(self.data['settings']['sound'])
-        # Images
+        self.load_fonts()
+        self.load_sounds()
         if not self.data['settings']['classic']:
             self.data['bg_img'] = pygame.image.load("assets/background.png")
             apple_skin, snake_skin = self.split_sprites(
@@ -161,6 +166,7 @@ class Game:
         except EnvironmentError:
             print(f"Couldn't load data from {PUN_FILE}")
             self.data['jokes'] = ["There are no snakes in my boot :("]
+
         # Creating snake and apple instances
         self.sneik = Snake()
         self.sneik.define_skin(snake_skin)
