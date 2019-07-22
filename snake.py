@@ -6,6 +6,7 @@ Classic look:
 - snake_game.apple.sprite = None
 
 TODO:
+- avoid eating neck with queue
 - add win condition.
 - intro screen with settings (volume, classic mode).
 - score file, top3 scores.
@@ -33,9 +34,7 @@ class Game:
     def __init__(self):
         self.win = None
         self.clock = None
-        self.running = True
-        self.on_pause = False
-        self.gameover = False
+        self.status = 'running'  # running, pause, gameover, stopping
         self.show_grid = False
         self.fonts = {}
         self.sounds = {}
@@ -68,7 +67,6 @@ class Game:
         # Setting game attributes
         self.win = pygame.display.set_mode((WIDTH, HEIGHT))
         self.clock = pygame.time.Clock()
-        self.running = True
 
         # Loading assets
         game_icon = pygame.image.load('assets/icon.png')
@@ -100,11 +98,10 @@ class Game:
         if (event.type == pygame.QUIT or
                 (event.type == pygame.KEYDOWN and
                  event.key == pygame.K_ESCAPE)):
-            self.gameover = True
-            self.running = False
+            self.status = 'stopping'
 
         # Snake control
-        elif event.type == pygame.KEYDOWN and not self.on_pause:
+        elif event.type == pygame.KEYDOWN and self.status == 'running':
             if (event.key == pygame.K_UP and
                     self.sneik.direction != "down"):
                 self.sneik.direction = "up"
@@ -123,27 +120,27 @@ class Game:
                 self.show_grid = not self.show_grid
             elif event.key == pygame.K_p:
                 self.pause()
-        elif event.type == pygame.KEYDOWN and self.on_pause:
+        elif event.type == pygame.KEYDOWN and self.status == 'pause':
             if event.key == pygame.K_p:
                 self.unpause()
 
     def on_loop(self):
         """Move snake and check interactions."""
-        if not self.on_pause:
+        if self.status == 'running':
             # Moves snake
             self.sneik.move()
 
             # Checks if snake crashed into itself
             if self.sneik.check_collision():
                 self.sounds['crash'].play()
-                self.gameover = True
+                self.status = 'gameover'
 
             # Checks if snake is feeding
             self.check_food()
 
     def on_render(self):
         """Draw window."""
-        if not self.on_pause:
+        if self.status == 'running' or self.status == 'gameover':
             # Draw background
             if self.bg_img:
                 self.win.blit(self.bg_img, (0, 0))
@@ -151,7 +148,7 @@ class Game:
                 self.win.fill(BGCOLOR)
 
             # Draw snake, apple, grid
-            self.sneik.draw(self.win, self.gameover)
+            self.sneik.draw(self.win, self.status == 'gameover')
             self.apple.draw(self.win)
             if self.show_grid:
                 self.draw_grid()
@@ -167,13 +164,13 @@ class Game:
     def on_execute(self):
         """Flow of the program."""
         self.on_init()
-        while self.running:
-            while not self.gameover:
+        while self.status != 'stopping':
+            while self.status != 'gameover' and self.status != 'stopping':
                 for event in pygame.event.get():
                     self.on_event(event)
                 self.on_loop()
                 self.on_render()
-            if self.gameover and self.running:
+            if self.status == 'gameover':
                 self.gameover_screen()
         self.on_cleanup()
 
@@ -181,7 +178,7 @@ class Game:
         """Pause game and render pause screen."""
         # Pauses game
         pygame.mixer.music.pause()
-        self.on_pause = True
+        self.status = 'pause'
 
         # Darkens the screen
         surf = pygame.Surface((WIDTH, HEIGHT))
@@ -203,7 +200,7 @@ class Game:
     def unpause(self):
         """Unpause game."""
         pygame.mixer.music.unpause()
-        self.on_pause = False
+        self.status = 'running'
 
     def reset_game(self):
         """Reset stats to start a new game."""
@@ -222,7 +219,7 @@ class Game:
                 # Play again
                 if (event.type == pygame.KEYDOWN and
                         event.key == pygame.K_RETURN):
-                    self.gameover = False
+                    self.status = 'running'
                     self.reset_game()
                     choice = True
                     pygame.mixer.music.play(-1)
@@ -231,7 +228,7 @@ class Game:
                 elif (event.type == pygame.QUIT or
                       (event.type == pygame.KEYDOWN and
                        event.key == pygame.K_ESCAPE)):
-                    self.running = False
+                    self.status = 'stopping'
                     choice = True
 
             # Displays message
