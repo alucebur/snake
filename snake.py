@@ -44,7 +44,7 @@ DEFAULT_KEYMAPPING = {
     'accept': pygame.K_RETURN
 }
 PUN_FILE = "puns.json"
-CONFIG_FILE = "settings2.json"
+CONFIG_FILE = "settings.json"
 
 
 class Game:
@@ -137,7 +137,7 @@ class Game:
         self.data['fonts']['mini'] = pygame.freetype.Font(
             "assets/fonts/Excalibur Nouveau.ttf", 20)
         self.data['fonts']['big'] = pygame.freetype.Font(
-            "assets/fonts/Jacked.ttf", 80)
+            "assets/fonts/Jacked.ttf", 100)
         # Sounds
         self.data['sounds'] = {}
         self.data['sounds']['eat'] = pygame.mixer.Sound(
@@ -314,13 +314,13 @@ class Game:
                 text = "YOU LOST"
                 text_surf, text_rect = self.data['fonts']['big'].render(
                     text, FGCOLOR)
-                text_rect.center = WIDTH//2, HEIGHT//2 - 60
+                text_rect.center = WIDTH//2, 150
                 self.win.blit(text_surf, text_rect)
 
                 text = f"Your score was {len(self.sneik.body) - 2}"
                 text_surf, text_rect = self.data['fonts']['small'].render(
                     text, FGCOLOR)
-                text_rect.center = WIDTH//2, HEIGHT//2
+                text_rect.center = WIDTH//2, HEIGHT//2 - 20
                 self.win.blit(text_surf, text_rect)
                 accept = pygame.key.name(self.data['keymapping']['accept'])
                 finish = pygame.key.name(self.data['keymapping']['exit'])
@@ -340,7 +340,7 @@ class Game:
         """Render text using several lines if not fit in surface."""
         text_surf, text_rect = self.data['fonts']['mini'].render(
             text, FGCOLOR)
-        text_rect.center = WIDTH//2, HEIGHT//2 + 110
+        text_rect.center = WIDTH//2, HEIGHT - 150
         self.win.blit(text_surf, text_rect)
 
     def draw_grid(self):
