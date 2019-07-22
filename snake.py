@@ -2,9 +2,9 @@
 
 TODO:
 - wrap joke text and change font.
-- add win condition.
-- intro screen with settings (volume, classic mode, rebind keys).
 - highscores screen, enter initials if highscore and save to file.
+- intro screen with settings (volume, classic mode, rebind keys).
+- add win condition.
 - joystick support.
 """
 import os
@@ -28,7 +28,7 @@ OPPOSITE = {'up': "down", 'down': "up", 'left': "right", 'right': "left"}
 DEFAULT_SETTINGS = {
     'sound': 1.0,
     'music': 0.8,
-    'mode': "modern"
+    'classic': False
 }
 DEFAULT_KEYMAPPING = {
     'direction':
@@ -147,7 +147,7 @@ class Game:
         for audio in self.data['sounds'].values():
             audio.set_volume(self.data['settings']['sound'])
         # Images
-        if self.data['settings']['mode'] == "modern":
+        if not self.data['settings']['classic']:
             self.data['bg_img'] = pygame.image.load("assets/background.png")
             apple_skin, snake_skin = self.split_sprites(
                 "assets/sprites/snake-graphics.png")
