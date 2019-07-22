@@ -26,8 +26,9 @@ This is a Python implementation of the classic game "Snake".
 
 ### Libraries used
 - os
-- random
+- json
 - queue
+- random
 - pygame
 
 ---
@@ -38,6 +39,10 @@ Requires Python 3.6+ (with pip).
 ---
 
 ### Installation
+Clone the repository or download and extract the zip or tarball file in an empty folder on your computer.
+
+Install dependencies:
+
 - Pipenv:
 
         pipenv install
@@ -45,6 +50,18 @@ Requires Python 3.6+ (with pip).
 - Pip:
 
         pip install -r requirements.txt
+
+Run the game:
+
+- Pipenv:
+
+        pipenv run snake.py
+
+- Other:
+
+        python snake.py
+
+Enjoy.
 
 ---
 

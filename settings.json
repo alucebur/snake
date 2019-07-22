@@ -1,0 +1,50 @@
+{
+    "settings":
+    {
+        "sound": 1.0,
+        "music": 0.8,
+        "mode": "modern"
+    },
+    "keymapping":
+    {
+        "direction":
+        {
+            "273": "up",
+            "274": "down",
+            "276": "left",
+            "275": "right"
+        },
+        "pause": 112,
+        "grid": 103,
+        "exit": 27,
+        "accept": 13
+    },
+    "highscores":
+    [
+        {
+            "name": "ALU",
+            "score": 5,
+            "date": "2019-07-21"
+        },
+        {
+            "name": "CEB",
+            "score": 4,
+            "date": "2019-07-21"
+        },
+        {
+            "name": "URW",
+            "score": 3,
+            "date": "2019-07-21"
+        },
+        {
+            "name": "ASH",
+            "score": 2,
+            "date": "2019-07-21"
+        },
+        {
+            "name": "ERE",
+            "score": 1,
+            "date": "2019-07-21"
+        }
+    ]
+}
