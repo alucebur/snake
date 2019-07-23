@@ -7,6 +7,7 @@ This is a Python implementation of the classic game "Snake".
 - [Libraries used](#libraries-used)
 - [Requirements](#requirements)
 - [Installation](#installation)
+- [Features](#features)
 - [License](#license)
 
 ---
@@ -31,6 +32,7 @@ This is a Python implementation of the classic game "Snake".
 - json
 - queue
 - random
+- datetime
 - pygame
 
 ---
@@ -64,6 +66,16 @@ Run the game:
         python snake.py
 
 Enjoy.
+
+---
+
+### Features
+- Infinite screen, it makes the game more dynamic and confusing
+- Pause, so you can get some apple from the kitchen
+- Modern and classic look, in case you are a nostalgic
+- Change key mapping, you don't have to use the arrow keys if you don't want (or have).
+- Set volume of effects and music separately.
+- TOP5 highscores, show your friends how skilled you are.
 
 ---
 

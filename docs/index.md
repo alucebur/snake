@@ -31,6 +31,7 @@ This is a Python implementation of the classic game "Snake".
 - json
 - queue
 - random
+- datetime
 - pygame
 
 ---

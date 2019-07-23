@@ -5,11 +5,13 @@ TODO:
 - intro screen with settings (volume, classic mode, rebind keys).
 - add win condition.
 - joystick support.
+- online mode.
 """
 import os
 import json
 import queue
 import random
+import datetime
 import pygame
 import pygame.freetype
 
@@ -24,6 +26,8 @@ APPLE_COLOR = pygame.Color("red3")
 BLACK = pygame.Color("black")
 FPS = 10  # Lower value for lower speed
 OPPOSITE = {'up': "down", 'down': "up", 'left': "right", 'right': "left"}
+PUN_FILE = "puns.json"
+CONFIG_FILE = "settings.json"
 DEFAULT_SETTINGS = {
     'sound': 1.0,
     'music': 0.8,
@@ -42,8 +46,6 @@ DEFAULT_KEYMAPPING = {
     'exit': pygame.K_ESCAPE,
     'accept': pygame.K_RETURN
 }
-PUN_FILE = "puns.json"
-CONFIG_FILE = "settings.json"
 
 
 class Game:
@@ -265,16 +267,9 @@ class Game:
         self.win.blit(surf, (0, 0))
 
         # Show pause message
-        text_surf, text_rect = self.data['fonts']['big'].render(
-            "Paused", FGCOLOR)
-        text_rect.center = (WIDTH//2, HEIGHT//2 - 40)
-        self.win.blit(text_surf, text_rect)
-
-        # Show current score
-        text_surf, text_rect = self.data['fonts']['small'].render(
-            f"Score: {len(self.sneik.body) - 2}", FGCOLOR)
-        text_rect.center = (WIDTH//2, HEIGHT//2 + 20)
-        self.win.blit(text_surf, text_rect)
+        self.render_centered_text("Paused", "big", FGCOLOR, WIDTH//2, 250)
+        self.render_centered_text(f"Score: {len(self.sneik.body) - 2}",
+                                  "small", FGCOLOR, WIDTH//2, 330)
 
     def unpause(self):
         """Unpause game."""
@@ -286,65 +281,123 @@ class Game:
         self.sneik.reset()
         self.apple.new(self.sneik.body)
 
+    def add_highscore(self, name):
+        """Adds highscore to data and file.
+        :param name: str."""
+        date = str(datetime.date.today())
+        score = len(self.sneik.body) - 2
+        new_highscore = {"name": name, "score": score, "date": date}
+
+        new_list = self.data['highscores'].copy()
+        new_list.append(new_highscore)
+        # Highscore list is sorted by score (desc) and date (asc)
+        new_list.sort(key=lambda x: (-x['score'], x['date']))
+        if len(new_list) > 5:
+            new_list.pop()
+        self.data['highscores'] = new_list
+
+        # Save to file
+        self.write_config()
+
     def gameover_screen(self):
         """Gameover message."""
         pygame.mixer.music.stop()
         pygame.time.delay(1000)
-        choice = False
 
-        # Load joke
         joke = random.choice(self.data['jokes'])
-
+        accept = pygame.key.name(self.data['keymapping']['accept'])
+        finish = pygame.key.name(self.data['keymapping']['exit'])
+        score = len(self.sneik.body) - 2
+        record = (score > min([user['score'] for
+                               user in self.data['highscores']],
+                              default=-1))
+        initials = ""
+        input_box = pygame.Rect(WIDTH // 2 + 82, 415, 100, 35)
+        choice = False
         # Waits until user decides to play again or exit game
         while not choice:
             for event in pygame.event.get():
-                # Play again
-                if (event.type == pygame.KEYDOWN and
-                        event.key == self.data['keymapping']['accept']):
-                    self.status = "running"
-                    self.reset_game()
-                    choice = True
-                    pygame.mixer.music.play(-1)
+                if not record:
+                    # Play again
+                    if (event.type == pygame.KEYDOWN and
+                            event.key == self.data['keymapping']['accept']):
+                        self.status = "running"
+                        self.reset_game()
+                        choice = True
+                        pygame.mixer.music.play(-1)
+                    # Exit game
+                    elif (event.type == pygame.QUIT or
+                          (event.type == pygame.KEYDOWN and
+                           event.key == self.data['keymapping']['exit'])):
+                        self.status = "stopping"
+                        choice = True
+                else:
+                    # Enter initials
+                    if event.type == pygame.QUIT:
+                        self.status = "stopping"
+                        choice = True
+                    elif event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_RETURN:
+                            # confirm
+                            self.add_highscore(initials)
+                            record = False
+                        elif event.key == pygame.K_BACKSPACE:
+                            # delete
+                            initials = initials[:-1]
+                        elif len(initials) < 3 and event.unicode.isalnum():
+                            # writing
+                            initials += event.unicode.upper()
 
-                # Exit game
-                elif (event.type == pygame.QUIT or
-                      (event.type == pygame.KEYDOWN and
-                       event.key == self.data['keymapping']['exit'])):
-                    self.status = "stopping"
-                    choice = True
-
-            # Displays message
+            # Displays gameover message
             if not choice:
                 self.win.fill(BGCOLOR)
-                text = "YOU LOST"
-                text_surf, text_rect = self.data['fonts']['big'].render(
-                    text, FGCOLOR)
-                text_rect.center = WIDTH//2, 150
-                self.win.blit(text_surf, text_rect)
-
-                text = f"Your score was {len(self.sneik.body) - 2}"
-                text_surf, text_rect = self.data['fonts']['small'].render(
-                    text, FGCOLOR)
-                text_rect.center = WIDTH//2, HEIGHT//2 - 20
-                self.win.blit(text_surf, text_rect)
-                accept = pygame.key.name(self.data['keymapping']['accept'])
-                finish = pygame.key.name(self.data['keymapping']['exit'])
-                text = (f"({accept.upper()} to play again, "
-                        f"{finish.upper()} to exit)")
-                text_surf, text_rect = self.data['fonts']['small'].render(
-                    text, FGCOLOR)
-                text_rect.center = WIDTH//2, HEIGHT//2 + 40
-                self.win.blit(text_surf, text_rect)
-
-                self.render_wrapped_text(joke, "mini", FGCOLOR, WIDTH//2,
-                                         HEIGHT-150, WIDTH-150)
+                self.render_centered_text("YOU LOST", "big", FGCOLOR,
+                                          WIDTH//2, 110)
+                self.render_centered_text(f"Your score was {score}",
+                                          "small", FGCOLOR, WIDTH//2, 270)
+                if not record:
+                    text = (f"({accept.upper()} to play again,"
+                            f" {finish.upper()} to exit)")
+                    self.render_centered_text(text, "small", FGCOLOR,
+                                              WIDTH//2, 325)
+                else:
+                    # Highscore message
+                    self.render_centered_text("New record!", "small", FGCOLOR,
+                                              WIDTH//2, 345)
+                    self.render_centered_text("Enter your initials: ", "small",
+                                              FGCOLOR, WIDTH//2-58, 420)
+                    # Initials textbox
+                    self.win.fill(BLACK, input_box)
+                    self.data['fonts']['small'].render_to(
+                        self.win, (input_box.x + 15, input_box.y + 5),
+                        initials, FGCOLOR)
+                # Pun
+                self.render_wrapped_centered_text(
+                    joke, "mini", FGCOLOR, WIDTH//2, HEIGHT-130, WIDTH-150)
 
                 self.clock.tick(FPS)
                 pygame.display.update()
 
-    def render_wrapped_text(self, text, font, color,
-                            center_x, pos_y, max_width):
-        """Render text using several lines if not fit in surface."""
+    def render_centered_text(self, text, font, color, center_x, pos_y):
+        """Render centered text on the screen.
+        :param text: str.
+        :param font: str.
+        :param color: 3-tuple of int.
+        :param center_x: int.
+        :param pos_y: int."""
+        text_surf, text_rect = self.data['fonts'][font].render(text, color)
+        text_rect.centerx, text_rect.y = center_x, pos_y
+        self.win.blit(text_surf, text_rect)
+
+    def render_wrapped_centered_text(self, text, font, color,
+                                     center_x, pos_y, max_width):
+        """Render text using several lines if not fit in surface.
+        :param text: str.
+        :param font: str.
+        :param color: 3-tuple of int.
+        :param center_x: int.
+        :param pos_y: int.
+        :param max_width: int."""
         words = text.split()
         lines = []
         # Separate text into lines
@@ -602,14 +655,15 @@ class Apple:
         self.sprite = sprite
         self.new(snake_body)
 
-    def new(self, snake_body):
-        """Create new random apple. It can't be in snake body.
-        :param snake: List of 2-tuples of int (x,y coordinates)."""
-        body_coordinates = [member[0] for member in snake_body]
+    def new(self, obstacles):
+        """Create new random apple. It can't be in obstacles.
+        :param obstacles: List of tuples with a 2-tuples of int
+                          as first element."""
+        banned_coordinates = [member[0] for member in obstacles]
         while True:
             self.pos = (random.randint(0, WIDTH//BLOCK[0] - 1),
                         random.randint(0, HEIGHT//BLOCK[1] - 1))
-            if self.pos not in body_coordinates:
+            if self.pos not in banned_coordinates:
                 break
 
     def draw(self, win):
