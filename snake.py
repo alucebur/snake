@@ -1,7 +1,6 @@
 """Classic Snake game implemented in Python.
 
 TODO:
-- highscores screen, enter initials if highscore and save to file.
 - intro screen with settings (volume, classic mode, rebind keys).
 - add win condition.
 - joystick support.
