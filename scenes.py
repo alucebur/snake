@@ -301,8 +301,6 @@ class SceneGameOver(SceneBase):
         resources.load_font("Excalibur Nouveau.ttf", 30, "small")
         resources.load_font("Jacked.ttf", 100, "big")
 
-        settings.load_jokes()
-
     def process_input(self, events: List[pygame.event.EventType],
                       pressed_keys: List[bool]):
         for event in events:
