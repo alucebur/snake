@@ -347,7 +347,7 @@ class SceneGameOver(SceneBase):
     def render(self, screen: pygame.Surface):
         width, height = pygame.display.get_surface().get_size()
 
-        # Displays gameover message
+        # Display gameover message
         screen.fill(BGCOLOR)
         text_surf, text_rect = render_text("YOU LOST",
                                            resources.get_font("big"), WHITE)
@@ -417,7 +417,7 @@ class SceneSettings(SceneBase):  # TODO
         pass
 
 
-class SceneHighScores(SceneBase):  # TODO
+class SceneHighScores(SceneBase):
     """Highscores scene."""
 
     def __init__(self):
@@ -427,15 +427,46 @@ class SceneHighScores(SceneBase):  # TODO
     @staticmethod
     def load_assets():
         """Load stuff that we will need later."""
+        resources.load_font("Excalibur Nouveau.ttf", 50, "round")
+        resources.load_font("Excalibur Nouveau.ttf", 30, "small")
+        resources.load_font("AurulentSansMono-Regular.otf", 30, "mono")
 
     def process_input(self, events, pressed_keys):
-        pass
+        for event in events:
+            if event.type == pygame.KEYDOWN:
+                if event.key == settings.get_key("accept"):
+                    self.switch_to_scene(SceneMenu)
 
     def update(self, now: int):
         pass
 
     def render(self, screen: pygame.Surface):
-        pass
+        width, height = pygame.display.get_surface().get_size()
+
+        screen.fill(BGCOLOR)
+
+        text_surf, text_rect = render_text(f"Highscores",
+                                           resources.get_font("round"), WHITE)
+        text_rect.centerx, text_rect.y = width//2, 50
+        screen.blit(text_surf, text_rect)
+
+        # Display highscore list
+        highscores = settings.get_highscores()
+        for i, highscore in enumerate(highscores):
+            color = (200 - i*30, 200 - i*20, 200 - i*30)
+            text = (f"{i+1} ___ {highscore['name']:>3} _____ "
+                    f"{highscore['score']:3} _____ {highscore['date']} ")
+            text_surf, text_rect = render_text(
+                text, resources.get_font("mono"), color)
+            text_rect.x, text_rect.y = 75, 150+i*50
+            screen.blit(text_surf, text_rect)
+
+        accept = pygame.key.name(settings.get_key("accept"))
+        text = f"({accept.upper()} to exit menu)"
+        text_surf, text_rect = render_text(text, resources.get_font("small"),
+                                           WHITE)
+        text_rect.centerx, text_rect.y = width//2, height - 120
+        screen.blit(text_surf, text_rect)
 
 
 class SceneMenu(SceneBase):
@@ -444,8 +475,9 @@ class SceneMenu(SceneBase):
     def __init__(self):
         super().__init__()
         self.options = [("Play", lambda: SceneTransition(SceneGame)),
-                        ("Settings", SceneMenu),
-                        ("Highscores", SceneMenu),
+                        ("Settings", lambda: SceneTransition(SceneMenu)),
+                        ("Highscores",
+                         lambda: SceneTransition(SceneHighScores)),
                         ("Quit", SceneExit)]
         self.selected = False
         self.index = 0
