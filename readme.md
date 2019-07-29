@@ -33,7 +33,7 @@ This is a Python implementation of the classic game "Snake".
 ---
 
 ### Screenshot
-![Game screenshot](https://i.imgur.com/fMgL2xd.png)
+![Game screenshot](https://i.imgur.com/XBchBza.png)
 
 ---
 
