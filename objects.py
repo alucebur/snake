@@ -393,10 +393,10 @@ class ParaBackground:
 
 class Slider:
     """Create a bar object filled at the given percentage."""
-    def __init__(self, percent: float):
+    def __init__(self, percent: float, width: int):
         self.percent = percent
         self.color = (0, 0, 0)
-        self.rect = pygame.Rect(0, 0, 250, 26)
+        self.rect = pygame.Rect(0, 0, width, 26)
         self.rect.x = 0
         self.rect.y = 0
 

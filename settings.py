@@ -68,8 +68,8 @@ def save_config():
     data['keymapping'] = keymapping
     data['highscores'] = highscores
     try:
-        with open(CONFIG_FILE, "w", encoding="utf-8") as fp:
-            json.dump(data, fp, indent=4)
+        with open(CONFIG_FILE, "w", encoding="utf-8") as file_p:
+            json.dump(data, file_p, indent=4)
     except EnvironmentError:
         print(f"Error: could't save config to file.")
     else:
@@ -82,8 +82,8 @@ def load_config():
     global highscores
 
     try:
-        with open(CONFIG_FILE, "r", encoding="utf-8") as fp:
-            config = json.load(fp)
+        with open(CONFIG_FILE, "r", encoding="utf-8") as file_p:
+            config = json.load(file_p)
     except EnvironmentError:
         # Create config file
         print(f"Error: could't load config from {CONFIG_FILE}.")
@@ -110,8 +110,8 @@ def load_jokes():
     global jokes
 
     try:
-        with open(PUN_FILE, "r", encoding="utf8") as fp:
-            data = json.load(fp)
+        with open(PUN_FILE, "r", encoding="utf8") as file_p:
+            data = json.load(file_p)
     except EnvironmentError:
         print(f"Couldn't load data from {PUN_FILE}")
         jokes = ["There are no snakes in my boot :("]

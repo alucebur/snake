@@ -386,8 +386,10 @@ class SceneSettings(SceneBase):
         self.classic = settings.get_setting("classic")
         self.options = ["Sound Effects", "Music", "Graphics",
                         "Change Controls", "Save and Return to Main Menu"]
-        self.sound_slider = Slider(self.sound)
-        self.music_slider = Slider(self.music)
+
+        # Create sliders
+        self.sound_slider = Slider(self.sound, 250)
+        self.music_slider = Slider(self.music, 250)
 
     def process_input(self, events, pressed_keys):
         for event in events:

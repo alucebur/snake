@@ -2,8 +2,22 @@
 
 TODO:
 - SceneSettingsControls scene (key bindings).
-- obstacles?
-- joystick support.
+- More settings: show/hide fps,
+                 set fps (ex. 3 modes: 30, 60, unlocked.
+                          Change transition scene duration, menu scene speed),
+                 resize screen (width multiple of BLOCK[0],
+                                height multiple of BLOCK[1],
+                                width < menu-bg width,
+                                add size to highscores (changes difficulty).
+                                ex. 4 modes, 640x480 (20x15 squares),
+                                             800x640 (25x20 squares),
+                                             1024x576 (32x18 squares),
+                                             1024x768 (32x24 squares).
+                                Change hardcoded coordinates in scenes.py),
+                 fullscreen.
+- obstacles.
+- grass effect when snake is moving.
+- joystick support (rewrite "enter highscore" screen).
 - online mode."""
 import os
 
