@@ -387,19 +387,19 @@ class SceneSettings(SceneBase):
         for event in events:
             if event.type == pygame.KEYDOWN:
                 # Select option
-                if event.key == pygame.K_UP:
+                if event.key == settings.get_key("up"):
                     self.index = (len(self.options)-1 if self.index == 0
                                   else self.index-1)
                     resources.get_sound("menu-sel").stop()
                     resources.get_sound("menu-sel").play()
-                elif event.key == pygame.K_DOWN:
+                elif event.key == settings.get_key("down"):
                     self.index = (0 if self.index == len(self.options)-1
                                   else self.index+1)
                     resources.get_sound("menu-sel").stop()
                     resources.get_sound("menu-sel").play()
 
                 # Modify option
-                elif event.key == pygame.K_LEFT:
+                elif event.key == settings.get_key("left"):
                     if self.index == 0:
                         self.sound -= (0.1 if self.sound >= 0.1 else 0)
                         self.test_volume(self.sound)
@@ -411,7 +411,7 @@ class SceneSettings(SceneBase):
                         resources.get_sound("menu-sel").play()
                         self.classic = not self.classic
 
-                elif event.key == pygame.K_RIGHT:
+                elif event.key == settings.get_key("right"):
                     if self.index == 0:
                         self.sound += (0.1 if self.sound <= 0.9 else 0)
                         self.test_volume(self.sound)
@@ -605,12 +605,12 @@ class SceneMenu(SceneBase):
     def process_input(self, events, pressed_keys):
         for event in events:
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_UP:
+                if event.key == settings.get_key("up"):
                     self.index = (len(self.options)-1 if self.index == 0
                                   else self.index-1)
                     resources.get_sound("menu-sel").stop()
                     resources.get_sound("menu-sel").play()
-                elif event.key == pygame.K_DOWN:
+                elif event.key == settings.get_key("down"):
                     self.index = (0 if self.index == len(self.options)-1
                                   else self.index+1)
                     resources.get_sound("menu-sel").stop()

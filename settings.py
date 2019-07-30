@@ -25,8 +25,15 @@ def get_setting(option: str) -> Any:
 def get_key(action: str) -> Any:
     """Return necessary keys for a certain action.
 
-    Possible actions are 'grid', 'pause', 'accept', 'exit'."""
-    return keymapping[action]
+    Possible actions are 'grid', 'pause', 'accept', 'exit', 'direction',
+    'up', 'down', 'left', 'right'. 'direction' returns a dictionary, the
+    rest return an integer"""
+    if action in keymapping:
+        result = keymapping[action]
+    elif action in keymapping['direction'].values():
+        directions = {v: k for k, v in keymapping['direction'].items()}
+        result = int(directions[action])
+    return result
 
 
 def get_joke() -> str:
