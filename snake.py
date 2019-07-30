@@ -1,7 +1,6 @@
 """Classic Snake game implemented in Python.
 
 TODO:
-- SceneSettingsControls scene (key bindings).
 - More settings: show/hide fps,
                  set fps (ex. 3 modes: 30, 60, unlocked.
                           Change transition scene duration, menu scene speed),

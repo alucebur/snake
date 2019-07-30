@@ -440,7 +440,7 @@ class SceneSettings(SceneBase):
                         self.switch_to_scene(SceneSettingsControls)
 
                     # Return to Main Menu
-                    elif self.index == 4:
+                    elif self.index == len(self.options) - 1:
                         self.save_config()
                         self.switch_to_scene(SceneMenu)
 
@@ -476,7 +476,7 @@ class SceneSettings(SceneBase):
 
         pos_y = 180
         for i, option in enumerate(self.options):
-            # leave more space for last option
+            # Leave more space for last option
             if i == len(self.options) - 1:
                 pos_y += 60
 
@@ -524,20 +524,140 @@ class SceneSettings(SceneBase):
         screen.blit(text_surf, text_rect)
 
 
-class SceneSettingsControls(SceneBase):  # TODO
+class SceneSettingsControls(SceneBase):
     """Change controls scene."""
 
     def __init__(self):
         super().__init__()
+        self.index = 0
+        self.changing = False
+        self.options = ["Up", "Down", "Left", "Right", "Grid", "Pause",
+                        "Accept", "Save and Return to Main Menu"]
+        self.keys = settings.get_keybindings()
 
     def process_input(self, events, pressed_keys):
-        pass
+        for event in events:
+            if event.type == pygame.KEYDOWN:
+                if not self.changing:
+                    # Select option
+                    if event.key == settings.get_key("up"):
+                        self.index = (len(self.options)-1 if self.index == 0
+                                      else self.index-1)
+                        resources.get_sound("menu-sel").stop()
+                        resources.get_sound("menu-sel").play()
+                    elif event.key == settings.get_key("down"):
+                        self.index = (0 if self.index == len(self.options)-1
+                                      else self.index+1)
+                        resources.get_sound("menu-sel").stop()
+                        resources.get_sound("menu-sel").play()
+
+                    # Modify option
+                    elif event.key == settings.get_key("accept"):
+                        resources.get_sound("menu-accept").stop()
+                        resources.get_sound("menu-accept").play()
+                        # Enter 'change key' mode
+                        if self.index != len(self.options) - 1:
+                            self.changing = True
+
+                        # Save and Return to Main Menu
+                        else:
+                            self.save_config()
+                            self.switch_to_scene(SceneMenu)
+                else:
+                    # Change key bind
+                    self.change_key(event.key)
+
+    def change_key(self, key: int):
+        """Change the key for a certain action."""
+        action = self.options[self.index].lower()
+
+        # Currently used keys
+        banned_keys = [v for k, v in self.keys.items() if k != "direction"]
+        banned_keys.extend([int(k) for k, v in self.keys['direction'].items()])
+
+        # Do nothing if the pressed key is already being used
+        if key not in banned_keys:
+            if 0 <= self.index <= 3:
+                # Change a direction key
+                old_key = {v: k for k, v in self.keys['direction'].items()
+                           if v == action}
+                del self.keys['direction'][old_key[action]]
+                self.keys['direction'][key] = action
+
+            else:
+                # Change an action key
+                if key not in banned_keys:
+                    self.keys[action] = key
+
+            self.changing = False
+
+    def save_config(self):
+        """Apply and save new controls."""
+        settings.set_keybinding(self.keys)
+        settings.save_config()
 
     def update(self, now: int):
         pass
 
     def render(self, screen: pygame.Surface):
-        pass
+        width = pygame.display.get_surface().get_width()
+
+        screen.fill(BGCOLOR)
+
+        text_surf, text_rect = render_text(f"Change Controls",
+                                           resources.get_font("round50"),
+                                           WHITE)
+        text_rect.centerx, text_rect.y = width//2, 50
+        screen.blit(text_surf, text_rect)
+
+        # Display key list
+        pos_y = 150
+        for i, option in enumerate(self.options):
+            # Leave more space for last option
+            if i == len(self.options) - 1:
+                pos_y += 45
+
+            if i == self.index:
+                # Selected
+                color = APPLE_COLOR
+                font = resources.get_font("round40")
+            else:
+                # Inactive
+                color = WHITE
+                font = resources.get_font("round30")
+
+            text_surf, text_rect = render_text(option, font, color)
+            text_rect.x, text_rect.y = (150, pos_y+45*i)
+            screen.blit(text_surf, text_rect)
+
+        # Display assigned key
+        pos_y = 150
+        font = resources.get_font("round30")
+        for i, option in enumerate(self.options[:-1]):
+            action = option.lower()
+            if 0 <= i <= 3:
+                # Direction key
+                key_par = {v: k for k, v in self.keys['direction'].items()
+                           if v == action}
+                key_name = pygame.key.name(int(key_par[action]))
+
+            else:
+                # Action key
+                key_name = pygame.key.name(self.keys[action])
+
+            # Changing key bind
+            if self.changing and i == self.index:
+                text_surf, text_rect = render_text(
+                    "Press a key", font, APPLE_COLOR)
+                text_rect.x, text_rect.y = (550, pos_y+45*i)
+                screen.blit(text_surf, text_rect)
+            else:
+                # Display key name
+                text_surf, text_rect = render_text(
+                    "- - - - - - - - - - - - - -       " + key_name, font,
+                    WHITE)
+                text_rect.x, text_rect.y = (270, pos_y+45*i)
+                screen.blit(text_surf, text_rect)
 
 
 class SceneHighScores(SceneBase):

@@ -1,5 +1,6 @@
 """Save and load game data (configuration, controls, highscores, jokes)."""
 import json
+from copy import deepcopy
 import random
 from typing import Any, List
 
@@ -36,6 +37,11 @@ def get_key(action: str) -> Any:
     return result
 
 
+def get_keybindings() -> dict:
+    """Return a copy of the dictionary with the key bindings."""
+    return deepcopy(keymapping)
+
+
 def get_joke() -> str:
     """Return a random pun."""
     return random.choice(jokes)
@@ -53,10 +59,17 @@ def get_highscores() -> List[dict]:
 
 # SETS ======================================================================
 def set_settings(option: str, value: Any):
-    """Set  configuration parameter.
+    """Set configuration parameter.
 
     Possible options are 'sound', 'music', 'classic'."""
     settings[option] = value
+
+
+def set_keybinding(keys: dict):
+    """Change keys for every action in the game."""
+    global keymapping
+
+    keymapping = keys
 
 
 # I/O =======================================================================
@@ -90,8 +103,8 @@ def load_config():
         save_config()
     else:
         # Load values from file
-        settings = config['settings'].copy()
-        highscores = config['highscores'].copy()
+        settings = config['settings']
+        highscores = config['highscores']
         keymapping['pause'] = config['keymapping']['pause']
         keymapping['grid'] = config['keymapping']['grid']
         keymapping['exit'] = config['keymapping']['exit']
@@ -116,4 +129,4 @@ def load_jokes():
         print(f"Couldn't load data from {PUN_FILE}")
         jokes = ["There are no snakes in my boot :("]
     else:
-        jokes = data['jokes'].copy()
+        jokes = data['jokes']
