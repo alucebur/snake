@@ -81,26 +81,26 @@ Enjoy.
 ---
 
 ### Screenshots
-<img src="docs/screenshots/1_tn.png" width="256" style="margin: 0px 10px" /><img src="docs/screenshots/2_tn.png" width="256" />
-<img src="docs/screenshots/3_tn.png" width="256" style="margin: 0px 10px" /><img src="docs/screenshots/4_tn.png" width="256" />
-<img src="docs/screenshots/5_tn.png" width="256" style="margin: 0px 10px" /><img src="docs/screenshots/6_tn.png" width="256" />
-<img src="docs/screenshots/7_tn.png" width="256" style="margin: 0px 10px" /><img src="docs/screenshots/8_tn.png" width="256" />
+<img src="docs/screenshots/1_tn.png" width="256" style="margin: 3px 5px" /><img src="docs/screenshots/2_tn.png" width="256" style="margin: 3px 5px" />
+<img src="docs/screenshots/3_tn.png" width="256" style="margin: 3px 5px" /><img src="docs/screenshots/4_tn.png" width="256" style="margin: 3px 5px" />
+<img src="docs/screenshots/5_tn.png" width="256" style="margin: 3px 5px" /><img src="docs/screenshots/6_tn.png" width="256" style="margin: 3px 5px" />
+<img src="docs/screenshots/7_tn.png" width="256" style="margin: 3px 5px" /><img src="docs/screenshots/8_tn.png" width="256" style="margin: 3px 5px" />
 
 ---
 
 ### Asset credits
-* **images**:
+* **Images**:
     * ***icon.png***: (modified from original) kungfu4000 in [opengameart.org](https://opengameart.org/content/snake-enemy-kit-32x32) under Public Domain.
     * ***tile-game1.png, tile-game2.png***: surfacecurve in [opengameart.org](https://opengameart.org/content/grass-textureseamless-2d) under Public Domain.
     * ***bg-menu1.png, bg-menu1b.png, bg-menu2.png, bg-menu2b.png***: Nidhoggn in [opengameart.org](https://opengameart.org/content/backgrounds-3) under Public Domain.
 
-* **fonts**:
+* **Fonts**:
     * ***AurulentSansMono-Regular.otf***: Stephen G. Hartke in [dafont.com](https://www.dafont.com/es/aurulent-sans-mono.font) under Public Domain/GPL/OFL.
     * ***Excalibur Nouveau.ttf***: Typo-Graf in [dafont.com](https://www.dafont.com/es/excalibur-nouveau.font) under Public Domain.
     * ***HanSrf.ttf***: Gerhard Großmann in [dafont.com](https://www.dafont.com/es/handserif.font) under Public Domain/GPL/OFL.
     * ***Jacked.ttf***: Lucas Cobb Designs in [dafont.com](https://www.dafont.com/es/jacked.font) under Public Domain/GPL/OFL.
 
-* **sounds and music**:
+* **Sounds and music**:
     * ***menu-accept.wav***: (modified from original) Kibblesbob in [soundbible.com](http://soundbible.com/1785-Skorpion.html) under Public Domain.
     * ***menu-select.wav***: (modified from original) Lisa Redfern in [soundbible.com](http://soundbible.com/2082-Hammering.html) under Public Domain.
     * ***snake-bite.wav***: (modified from original) GregoryWeir in [soundbible.com](http://soundbible.com/1394-Dragon-Bite.html) under Public Domain.
@@ -108,7 +108,7 @@ Enjoy.
     * ***menu-music.ogg***: (modified from original) aldo in [soundbible.com](http://soundbible.com/1546-Hiking-A-Trail.html) under Public Domain.
     * ***snake-music-Rafael-Krux.ogg***: (modified from original) Rafael Krux in [freepd.com](https://freepd.com/epic.php) *(Video Game Blockbuster)* under Public Domain.
 
-* **sprites**:
+* **Sprites**:
     * ***snake-sprites.png***: (modified from original) rembound in [github.com/rembound](https://github.com/rembound/Snake-Game-HTML5) under GPLv3.
 
 ---
