@@ -12,13 +12,17 @@ jokes = []
 
 
 # GETS ======================================================================
-def get_setting(param: str) -> Any:
-    """Return configuration parameter."""
-    return settings[param]
+def get_setting(option: str) -> Any:
+    """Return configuration parameter.
+
+    Possible options are 'sound', 'music', 'classic'."""
+    return settings[option]
 
 
 def get_key(action: str) -> Any:
-    """Return necessary keys for a certain action."""
+    """Return necessary keys for a certain action.
+
+    Possible actions are 'grid', 'pause', 'accept', 'exit'."""
     return keymapping[action]
 
 
@@ -35,6 +39,14 @@ def lower_highscore() -> int:
 def get_highscores() -> List[dict]:
     """Return top highscores list."""
     return highscores
+
+
+# SETS ======================================================================
+def set_settings(option: str, value: Any):
+    """Set  configuration parameter.
+
+    Possible options are 'sound', 'music', 'classic'."""
+    settings[option] = value
 
 
 # I/O =======================================================================

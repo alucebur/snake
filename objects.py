@@ -7,7 +7,7 @@ from typing import Dict, Tuple
 import pygame
 
 from consts import (SnakeBody, BLOCK, APPLE_COLOR,
-                    SNAKE_COLOR, OPPOSITE)
+                    WHITE, SNAKE_COLOR, OPPOSITE)
 
 
 class Apple:
@@ -389,3 +389,21 @@ class ParaBackground:
         """Draw on the screen."""
         screen.blit(self.surface, self.rect_s)
         screen.blit(self.layer, self.rect_l)
+
+
+class Slider:
+    """Create a bar object filled at the given percentage."""
+    def __init__(self, percent: float):
+        self.percent = percent
+        self.color = (0, 0, 0)
+        self.rect = pygame.Rect(0, 0, 250, 26)
+        self.rect.x = 0
+        self.rect.y = 0
+
+    def draw(self, screen: pygame.Surface):
+        """Draw on the screen."""
+        bar_rect = (self.rect.x + 2, self.rect.y + 2,
+                    (self.rect.w - 4)*self.percent,
+                    self.rect.h - 4)
+        pygame.draw.rect(screen, WHITE, self.rect)
+        pygame.draw.rect(screen, self.color, bar_rect)

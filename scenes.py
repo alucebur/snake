@@ -8,9 +8,10 @@ import pygame.freetype
 
 import settings
 import resources
-from objects import Apple, Snake, ParaBackground
+from objects import Apple, Snake, ParaBackground, Slider
 from helpers import render_text, render_wrapped_text, get_surface
-from consts import BGCOLOR, WHITE, BLACK, APPLE_COLOR, BLOCK, SPRITE_BLOCK
+from consts import (BGCOLOR, WHITE, BLACK, APPLE_COLOR,
+                    BLOCK, SPRITE_BLOCK)
 
 
 class SceneBase:
@@ -396,8 +397,164 @@ class SceneGameOver(SceneBase):
         screen.blit(text_surf, text_rect)
 
 
-class SceneSettings(SceneBase):  # TODO
+class SceneSettings(SceneBase):
     """Settings scene."""
+
+    def __init__(self):
+        super().__init__()
+        self.index = 0
+        self.sound = settings.get_setting("sound")
+        self.music = settings.get_setting("music")
+        self.classic = settings.get_setting("classic")
+        self.options = ["Sound Effects", "Music", "Graphics",
+                        "Change Controls", "Save and Return to Main Menu"]
+        self.sound_slider = Slider(self.sound)
+        self.music_slider = Slider(self.music)
+        self.load_assets()
+
+    @staticmethod
+    def load_assets():
+        """Load stuff that we will need later."""
+        resources.load_font("Excalibur Nouveau.ttf", 50, "round")
+        resources.load_font("Excalibur Nouveau.ttf", 40, "medium")
+        resources.load_font("Excalibur Nouveau.ttf", 30, "small")
+
+        resources.load_sound("menu-select.wav", "menu-sel")
+        resources.load_sound("menu-accept.wav", "menu-accept")
+        resources.load_sound("snake-bite.wav", "test")
+        resources.set_volume(settings.get_setting("sound"))
+
+    def process_input(self, events, pressed_keys):
+        for event in events:
+            if event.type == pygame.KEYDOWN:
+                # Select option
+                if event.key == pygame.K_UP:
+                    self.index = (len(self.options)-1 if self.index == 0
+                                  else self.index-1)
+                    resources.get_sound("menu-sel").stop()
+                    resources.get_sound("menu-sel").play()
+                elif event.key == pygame.K_DOWN:
+                    self.index = (0 if self.index == len(self.options)-1
+                                  else self.index+1)
+                    resources.get_sound("menu-sel").stop()
+                    resources.get_sound("menu-sel").play()
+
+                # Modify option
+                elif event.key == pygame.K_LEFT:
+                    if self.index == 0:
+                        self.sound -= (0.1 if self.sound >= 0.1 else 0)
+                        self.test_volume(self.sound)
+                    elif self.index == 1:
+                        self.music -= (0.1 if self.music >= 0.1 else 0)
+                        self.test_volume(self.music)
+                    elif self.index == 2:
+                        resources.get_sound("menu-sel").stop()
+                        resources.get_sound("menu-sel").play()
+                        self.classic = not self.classic
+
+                elif event.key == pygame.K_RIGHT:
+                    if self.index == 0:
+                        self.sound += (0.1 if self.sound <= 0.9 else 0)
+                        self.test_volume(self.sound)
+                    elif self.index == 1:
+                        self.music += (0.1 if self.music <= 0.9 else 0)
+                        self.test_volume(self.music)
+                    elif self.index == 2:
+                        resources.get_sound("menu-sel").stop()
+                        resources.get_sound("menu-sel").play()
+                        self.classic = not self.classic
+
+                elif (event.key == settings.get_key("accept") and
+                      2 < self.index < 5):
+                    resources.get_sound("menu-accept").stop()
+                    resources.get_sound("menu-accept").play()
+                    # Change controls
+                    if self.index == 3:
+                        self.switch_to_scene(SceneSettingsControls)
+
+                    # Return to Main Menu
+                    elif self.index == 4:
+                        self.save_config()
+                        self.switch_to_scene(SceneMenu)
+
+    def test_volume(self, option: float):
+        """Play a sound at the given volume.."""
+        test_audio = resources.get_sound("test")
+        test_audio.stop()
+        test_audio.set_volume(option)
+        test_audio.play()
+
+    def save_config(self):
+        """Save new settings."""
+        settings.set_settings("sound", round(self.sound, 1))
+        settings.set_settings("music", round(self.music, 1))
+        settings.set_settings("classic", self.classic)
+        settings.save_config()
+
+    def update(self, now: int):
+        pass
+
+    def render(self, screen: pygame.Surface):
+        width = pygame.display.get_surface().get_width()
+        screen.fill(BGCOLOR)
+
+        font = resources.get_font("round")
+        text_surf, text_rect = render_text("Settings", font, WHITE)
+        text_rect.centerx, text_rect.y = width//2, 50
+        screen.blit(text_surf, text_rect)
+
+        pos_y = 180
+        for i, option in enumerate(self.options):
+            # leave more space for last option
+            if i == len(self.options) - 1:
+                pos_y += 60
+
+            if i == self.index:
+                # Selected
+                color = APPLE_COLOR
+                font = resources.get_font("medium")
+            else:
+                # Inactive
+                color = WHITE
+                font = resources.get_font("small")
+
+            text_surf, text_rect = render_text(option, font, color)
+            text_rect.x, text_rect.y = (150, pos_y+60*i)
+            screen.blit(text_surf, text_rect)
+
+        # Sound slider
+        self.sound_slider.percent = self.sound
+        self.sound_slider.rect.x = 450
+        self.sound_slider.rect.y = 180
+        if self.index == 0:
+            self.sound_slider.color = APPLE_COLOR
+        else:
+            self.sound_slider.color = BGCOLOR
+        self.sound_slider.draw(screen)
+
+        # Music slider
+        self.music_slider.percent = self.music
+        self.music_slider.rect.x = 450
+        self.music_slider.rect.y = 240
+        if self.index == 1:
+            self.music_slider.color = APPLE_COLOR
+        else:
+            self.music_slider.color = BGCOLOR
+        self.music_slider.draw(screen)
+
+        # Graphics
+        font = resources.get_font("small")
+        if self.classic:
+            text_surf, text_rect = render_text("Classic /", font, APPLE_COLOR)
+            text_rect.x, text_rect.y = 465, 300
+        else:
+            text_surf, text_rect = render_text("/ Modern", font, APPLE_COLOR)
+            text_rect.x, text_rect.y = 564, 300
+        screen.blit(text_surf, text_rect)
+
+
+class SceneSettingsControls(SceneBase):  # TODO
+    """Change controls scene."""
 
     def __init__(self):
         super().__init__()
@@ -428,13 +585,18 @@ class SceneHighScores(SceneBase):
     def load_assets():
         """Load stuff that we will need later."""
         resources.load_font("Excalibur Nouveau.ttf", 50, "round")
-        resources.load_font("Excalibur Nouveau.ttf", 30, "small")
+        resources.load_font("Excalibur Nouveau.ttf", 40, "medium")
         resources.load_font("AurulentSansMono-Regular.otf", 30, "mono")
+
+        resources.load_sound("menu-accept.wav", "menu-accept")
+        resources.set_volume(settings.get_setting("sound"))
 
     def process_input(self, events, pressed_keys):
         for event in events:
             if event.type == pygame.KEYDOWN:
                 if event.key == settings.get_key("accept"):
+                    resources.get_sound("menu-accept").stop()
+                    resources.get_sound("menu-accept").play()
                     self.switch_to_scene(SceneMenu)
 
     def update(self, now: int):
@@ -461,10 +623,9 @@ class SceneHighScores(SceneBase):
             text_rect.x, text_rect.y = 75, 150+i*50
             screen.blit(text_surf, text_rect)
 
-        accept = pygame.key.name(settings.get_key("accept"))
-        text = f"({accept.upper()} to exit menu)"
-        text_surf, text_rect = render_text(text, resources.get_font("small"),
-                                           WHITE)
+        text = "Return to Main Menu"
+        text_surf, text_rect = render_text(text, resources.get_font("medium"),
+                                           APPLE_COLOR)
         text_rect.centerx, text_rect.y = width//2, height - 120
         screen.blit(text_surf, text_rect)
 
@@ -475,7 +636,7 @@ class SceneMenu(SceneBase):
     def __init__(self):
         super().__init__()
         self.options = [("Play", lambda: SceneTransition(SceneGame)),
-                        ("Settings", lambda: SceneTransition(SceneMenu)),
+                        ("Settings", lambda: SceneTransition(SceneSettings)),
                         ("Highscores",
                          lambda: SceneTransition(SceneHighScores)),
                         ("Quit", SceneExit)]

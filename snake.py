@@ -1,8 +1,7 @@
 """Classic Snake game implemented in Python.
 
 TODO:
-- settings scenes.
-- win condition (max points = width*height/32/32 - 2 = 498 -> 250 points=win)
+- SceneSettingsControls scene (key bindings).
 - obstacles?
 - joystick support.
 - online mode."""
