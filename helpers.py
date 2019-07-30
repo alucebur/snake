@@ -74,3 +74,22 @@ def get_surface(size: Tuple[int, int], color: Color,
     surface.set_alpha(alpha)
     surface.fill(color)
     return surface
+
+
+@lru_cache(maxsize=3)
+def build_background(tile: pygame.Surface) -> pygame.Surface:
+    """Return a screen-sized surface filled with a repeated given tile."""
+    # Get screen and tile sizes
+    screen_rect = pygame.display.get_surface().get_rect()
+    screen_size = (screen_rect.w, screen_rect.h)
+    tile_rect = tile.get_rect()
+
+    # Get surface. All arguments need to be hashable
+    surface = get_surface(screen_size, (0, 0, 0), 255)
+
+    # Fill surface with repeated tile
+    for i in range(0, screen_rect.w, tile_rect.w):
+        for j in range(0, screen_rect.h, tile_rect.h):
+            surface.blit(tile, (i, j))
+
+    return surface

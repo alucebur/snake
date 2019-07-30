@@ -9,7 +9,8 @@ import pygame.freetype
 import settings
 import resources
 from objects import Apple, Snake, ParaBackground, Slider
-from helpers import render_text, render_wrapped_text, get_surface
+from helpers import (render_text, render_wrapped_text, get_surface,
+                     build_background)
 from consts import (BGCOLOR, WHITE, BLACK, APPLE_COLOR,
                     BLOCK, SPRITE_BLOCK)
 
@@ -117,6 +118,11 @@ class SceneGame(SceneBase):
         self.show_grid = False
         self.play_music()
 
+        # Create background from random texture
+        i = random.getrandbits(1) + 1
+        self.background = build_background(resources.get_image(
+            f"snake-tile{i}"))
+
         # Create objects snake and apple
         if not settings.get_setting("classic"):
             apple_skin, snake_skin = self.split_sprites(
@@ -223,7 +229,7 @@ class SceneGame(SceneBase):
                                     not self.event_painted)):
             # Draw background
             if not settings.get_setting("classic"):
-                screen.blit(resources.get_image("snake-bg"), (0, 0))
+                screen.blit(self.background, (0, 0))
             else:
                 # Classic look
                 screen.fill(BGCOLOR)

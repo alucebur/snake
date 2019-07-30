@@ -63,7 +63,8 @@ def load_assets():
     load_image("bg-menu1b.png", "menu-bg1b", alpha=True)
     load_image("bg-menu2.png", "menu-bg2")
     load_image("bg-menu2b.png", "menu-bg2b", alpha=True)
-    load_image("bg-game1.png", "snake-bg")
+    load_image("tile-game1.png", "snake-tile1")
+    load_image("tile-game2.png", "snake-tile2")
     load_sprite("snake-sprites.png", "sheet")
 
     # Sounds
