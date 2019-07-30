@@ -10,6 +10,7 @@ import os
 import pygame
 
 import settings
+import resources
 from scenes import SceneBase, SceneMenu
 
 
@@ -24,7 +25,8 @@ def run_game(width: int, height: int, fps: int, starting_scene: SceneBase):
     pygame.mouse.set_visible(False)
     clock = pygame.time.Clock()
 
-    # Load data
+    # Load game data
+    resources.load_assets()
     settings.load_config()
     settings.load_jokes()
 

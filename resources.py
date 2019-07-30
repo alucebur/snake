@@ -40,6 +40,39 @@ def load_sprite(name: str, label: str):
         str(SPRITES_PATH / name)).convert_alpha()
 
 
+def load_music(name: str):
+    """Load music for the game."""
+    pygame.mixer.music.load(str(SOUNDS_PATH / name))
+
+
+def load_assets():
+    """Load stuff that we will need later."""
+    # Fonts
+    load_font("HanSrf.ttf", 25, "normal25")
+    load_font("HanSrf.ttf", 30, "normal30")
+    load_font("Excalibur Nouveau.ttf", 30, "round30")
+    load_font("Excalibur Nouveau.ttf", 40, "round40")
+    load_font("Excalibur Nouveau.ttf", 50, "round50")
+    load_font("Jacked.ttf", 80, "title80")
+    load_font("Jacked.ttf", 100, "title100")
+    load_font("Jacked.ttf", 175, "title175")
+    load_font("AurulentSansMono-Regular.otf", 30, "mono30")
+
+    # Images and sprites
+    load_image("bg-menu1.png", "menu-bg1")
+    load_image("bg-menu1b.png", "menu-bg1b", alpha=True)
+    load_image("bg-menu2.png", "menu-bg2")
+    load_image("bg-menu2b.png", "menu-bg2b", alpha=True)
+    load_image("bg-game1.png", "snake-bg")
+    load_sprite("snake-sprites.png", "sheet")
+
+    # Sounds
+    load_sound("snake-bite.wav", "eat")
+    load_sound("snake-crash.wav", "crash")
+    load_sound("menu-select.wav", "menu-sel")
+    load_sound("menu-accept.wav", "menu-accept")
+
+
 # GETS ======================================================================
 def get_font(label: str) -> pygame.freetype.Font:
     """Return font object."""

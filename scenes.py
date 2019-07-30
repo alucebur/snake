@@ -76,14 +76,7 @@ class SceneExit(SceneBase):
         super().__init__()
         self.timer = 0
         self.started = False
-        self.load_assets()
         pygame.display.set_mode((480, 320), pygame.NOFRAME)
-
-    @staticmethod
-    def load_assets():
-        """Load stuff that we will need later."""
-        resources.load_font("HanSrf.ttf", 30, "mini")
-        resources.load_font("Jacked.ttf", 80, "big")
 
     def process_input(self, events, pressed_keys):
         pass
@@ -100,13 +93,13 @@ class SceneExit(SceneBase):
         width, height = pygame.display.get_surface().get_size()
         screen.fill(BGCOLOR)
 
-        font = resources.get_font("big")
+        font = resources.get_font("title80")
         rd_text, rd_rect = render_wrapped_text("Thanks for playing", font,
                                                WHITE, True, 10, width-50)
         rd_rect.centerx, rd_rect.centery = width//2, height//2-20
         screen.blit(rd_text, rd_rect)
 
-        font = resources.get_font("mini")
+        font = resources.get_font("normal30")
         rd_text, rd_rect = render_text("A game by @Alucebur", font, WHITE)
         rd_rect.x, rd_rect.y = 30, height-40
         screen.blit(rd_text, rd_rect)
@@ -117,12 +110,12 @@ class SceneGame(SceneBase):
 
     def __init__(self):
         super().__init__()
-        self.load_assets()
         self.timer = 0
         self.is_paused = False
         self.has_crashed = False
         self.event_painted = False
         self.show_grid = False
+        self.play_music()
 
         # Create objects snake and apple
         if not settings.get_setting("classic"):
@@ -135,25 +128,9 @@ class SceneGame(SceneBase):
         self.apple = Apple(self.sneik.body, apple_skin)
 
     @staticmethod
-    def load_assets():
-        """Load stuff that we will need later and play epic music."""
-        resources.load_font("HanSrf.ttf", 25, "mini")
-        resources.load_font("Excalibur Nouveau.ttf", 30, "small")
-        resources.load_font("Jacked.ttf", 100, "big")
-
-        resources.load_image("bg-game1.png", "snake-bg")
-
-        # Don't load sprites if classic mode is selected
-        if not settings.get_setting("classic"):
-            resources.load_sprite("snake-sprites.png", "sheet")
-
-        resources.load_sound("snake-bite.wav", "eat")
-        resources.load_sound("snake-crash.wav", "crash")
-        resources.load_sound("menu-select.wav", "menu-select")
-        resources.set_volume(settings.get_setting("sound"))
-
-        pygame.mixer.music.load("assets/audio/snake-music-Rafael_Krux.ogg")
-        pygame.mixer.music.set_volume(settings.get_setting("music"))
+    def play_music():
+        """Load and play epic music."""
+        resources.load_music("snake-music-Rafael_Krux.ogg")
         pygame.mixer.music.play(-1)
 
     @staticmethod
@@ -271,12 +248,12 @@ class SceneGame(SceneBase):
             screen.blit(surf, (0, 0))
 
             # Show pause message
-            font = resources.get_font("big")
+            font = resources.get_font("title100")
             text_surf, text_rect = render_text("Paused", font, WHITE)
             text_rect.center = width//2, 250
             screen.blit(text_surf, text_rect)
 
-            font = resources.get_font("small")
+            font = resources.get_font("round30")
             text_surf, text_rect = render_text(
                 f"Score: {len(self.sneik.body) - 2}", font, WHITE)
             text_rect.center = width//2, 330
@@ -292,15 +269,7 @@ class SceneGameOver(SceneBase):
         self.score = score
         self.record = (self.score > settings.lower_highscore())
         self.initials = ""
-        self.load_assets()
         self.joke = settings.get_joke()
-
-    @staticmethod
-    def load_assets():
-        """Load stuff that we will need later."""
-        resources.load_font("HanSrf.ttf", 25, "mini")
-        resources.load_font("Excalibur Nouveau.ttf", 30, "small")
-        resources.load_font("Jacked.ttf", 100, "big")
 
     def process_input(self, events: List[pygame.event.EventType],
                       pressed_keys: List[bool]):
@@ -351,12 +320,14 @@ class SceneGameOver(SceneBase):
         # Display gameover message
         screen.fill(BGCOLOR)
         text_surf, text_rect = render_text("YOU LOST",
-                                           resources.get_font("big"), WHITE)
+                                           resources.get_font("title100"),
+                                           WHITE)
         text_rect.centerx, text_rect.y = width//2, 110
         screen.blit(text_surf, text_rect)
 
         text_surf, text_rect = render_text(f"Your score was {self.score}",
-                                           resources.get_font("small"), WHITE)
+                                           resources.get_font("round30"),
+                                           WHITE)
         text_rect.centerx, text_rect.y = width//2, 270
         screen.blit(text_surf, text_rect)
 
@@ -366,20 +337,20 @@ class SceneGameOver(SceneBase):
             text = (f"({accept.upper()} to replay,"
                     f" {finish.upper()} to exit menu)")
             text_surf, text_rect = render_text(text,
-                                               resources.get_font("small"),
+                                               resources.get_font("round30"),
                                                WHITE)
             text_rect.centerx, text_rect.y = width//2, 325
             screen.blit(text_surf, text_rect)
         else:
             # Highscore message
             text_surf, text_rect = render_text("New record!",
-                                               resources.get_font("small"),
+                                               resources.get_font("round30"),
                                                WHITE)
             text_rect.centerx, text_rect.y = width//2, 345
             screen.blit(text_surf, text_rect)
 
             text_surf, text_rect = render_text("Enter your initials: ",
-                                               resources.get_font("small"),
+                                               resources.get_font("round30"),
                                                WHITE)
             text_rect.centerx, text_rect.y = width//2-58, 420
             screen.blit(text_surf, text_rect)
@@ -387,12 +358,13 @@ class SceneGameOver(SceneBase):
             # Textbox
             input_box = pygame.Rect(width//2+82, 415, 100, 35)
             screen.fill(BLACK, input_box)
-            resources.get_font("small").render_to(
+            resources.get_font("round30").render_to(
                 screen, (input_box.x+15, input_box.y+5), self.initials, WHITE)
 
         # Pun
         text_surf, text_rect = render_wrapped_text(
-            self.joke, resources.get_font("mini"), WHITE, True, 10, width-150)
+            self.joke, resources.get_font("normal25"), WHITE, True,
+            10, width-150)
         text_rect.centerx, text_rect.y = width//2, height-130
         screen.blit(text_surf, text_rect)
 
@@ -410,19 +382,6 @@ class SceneSettings(SceneBase):
                         "Change Controls", "Save and Return to Main Menu"]
         self.sound_slider = Slider(self.sound)
         self.music_slider = Slider(self.music)
-        self.load_assets()
-
-    @staticmethod
-    def load_assets():
-        """Load stuff that we will need later."""
-        resources.load_font("Excalibur Nouveau.ttf", 50, "round")
-        resources.load_font("Excalibur Nouveau.ttf", 40, "medium")
-        resources.load_font("Excalibur Nouveau.ttf", 30, "small")
-
-        resources.load_sound("menu-select.wav", "menu-sel")
-        resources.load_sound("menu-accept.wav", "menu-accept")
-        resources.load_sound("snake-bite.wav", "test")
-        resources.set_volume(settings.get_setting("sound"))
 
     def process_input(self, events, pressed_keys):
         for event in events:
@@ -479,17 +438,21 @@ class SceneSettings(SceneBase):
 
     def test_volume(self, option: float):
         """Play a sound at the given volume.."""
-        test_audio = resources.get_sound("test")
+        test_audio = resources.get_sound("eat")
         test_audio.stop()
         test_audio.set_volume(option)
         test_audio.play()
 
     def save_config(self):
-        """Save new settings."""
+        """Apply and save new settings."""
         settings.set_settings("sound", round(self.sound, 1))
         settings.set_settings("music", round(self.music, 1))
         settings.set_settings("classic", self.classic)
         settings.save_config()
+
+        # Set volumes
+        resources.set_volume(settings.get_setting("sound"))
+        pygame.mixer.music.set_volume(settings.get_setting("music"))
 
     def update(self, now: int):
         pass
@@ -498,7 +461,7 @@ class SceneSettings(SceneBase):
         width = pygame.display.get_surface().get_width()
         screen.fill(BGCOLOR)
 
-        font = resources.get_font("round")
+        font = resources.get_font("round50")
         text_surf, text_rect = render_text("Settings", font, WHITE)
         text_rect.centerx, text_rect.y = width//2, 50
         screen.blit(text_surf, text_rect)
@@ -512,11 +475,11 @@ class SceneSettings(SceneBase):
             if i == self.index:
                 # Selected
                 color = APPLE_COLOR
-                font = resources.get_font("medium")
+                font = resources.get_font("round40")
             else:
                 # Inactive
                 color = WHITE
-                font = resources.get_font("small")
+                font = resources.get_font("round30")
 
             text_surf, text_rect = render_text(option, font, color)
             text_rect.x, text_rect.y = (150, pos_y+60*i)
@@ -543,7 +506,7 @@ class SceneSettings(SceneBase):
         self.music_slider.draw(screen)
 
         # Graphics
-        font = resources.get_font("small")
+        font = resources.get_font("round30")
         if self.classic:
             text_surf, text_rect = render_text("Classic /", font, APPLE_COLOR)
             text_rect.x, text_rect.y = 465, 300
@@ -558,11 +521,6 @@ class SceneSettingsControls(SceneBase):  # TODO
 
     def __init__(self):
         super().__init__()
-        self.load_assets()
-
-    @staticmethod
-    def load_assets():
-        """Load stuff that we will need later."""
 
     def process_input(self, events, pressed_keys):
         pass
@@ -579,17 +537,6 @@ class SceneHighScores(SceneBase):
 
     def __init__(self):
         super().__init__()
-        self.load_assets()
-
-    @staticmethod
-    def load_assets():
-        """Load stuff that we will need later."""
-        resources.load_font("Excalibur Nouveau.ttf", 50, "round")
-        resources.load_font("Excalibur Nouveau.ttf", 40, "medium")
-        resources.load_font("AurulentSansMono-Regular.otf", 30, "mono")
-
-        resources.load_sound("menu-accept.wav", "menu-accept")
-        resources.set_volume(settings.get_setting("sound"))
 
     def process_input(self, events, pressed_keys):
         for event in events:
@@ -608,7 +555,8 @@ class SceneHighScores(SceneBase):
         screen.fill(BGCOLOR)
 
         text_surf, text_rect = render_text(f"Highscores",
-                                           resources.get_font("round"), WHITE)
+                                           resources.get_font("round50"),
+                                           WHITE)
         text_rect.centerx, text_rect.y = width//2, 50
         screen.blit(text_surf, text_rect)
 
@@ -619,12 +567,12 @@ class SceneHighScores(SceneBase):
             text = (f"{i+1} ___ {highscore['name']:>3} _____ "
                     f"{highscore['score']:3} _____ {highscore['date']} ")
             text_surf, text_rect = render_text(
-                text, resources.get_font("mono"), color)
+                text, resources.get_font("mono30"), color)
             text_rect.x, text_rect.y = 75, 150+i*50
             screen.blit(text_surf, text_rect)
 
         text = "Return to Main Menu"
-        text_surf, text_rect = render_text(text, resources.get_font("medium"),
+        text_surf, text_rect = render_text(text, resources.get_font("round40"),
                                            APPLE_COLOR)
         text_rect.centerx, text_rect.y = width//2, height - 120
         screen.blit(text_surf, text_rect)
@@ -642,31 +590,16 @@ class SceneMenu(SceneBase):
                         ("Quit", SceneExit)]
         self.selected = False
         self.index = 0
-        self.load_assets()
+        self.play_music()
         i = random.getrandbits(1) + 1
         i = 1
         self.background = ParaBackground(resources.get_image(f"menu-bg{i}"),
                                          resources.get_image(f"menu-bg{i}b"))
 
     @staticmethod
-    def load_assets():
-        """Load stuff that we will need later and play annoying music."""
-        resources.load_font("Jacked.ttf", 175, "menu-title")
-        resources.load_font("Jacked.ttf", 150, "artdeco150")
-        resources.load_font("Excalibur Nouveau.ttf", 40, "hippy40")
-        resources.load_font("Excalibur Nouveau.ttf", 50, "hippy50")
-
-        resources.load_image("bg-menu1.png", "menu-bg1")
-        resources.load_image("bg-menu1b.png", "menu-bg1b", alpha=True)
-        resources.load_image("bg-menu2.png", "menu-bg2")
-        resources.load_image("bg-menu2b.png", "menu-bg2b", alpha=True)
-
-        resources.load_sound("menu-select.wav", "menu-sel")
-        resources.load_sound("menu-accept.wav", "menu-accept")
-        resources.set_volume(settings.get_setting("sound"))
-
-        pygame.mixer.music.load("assets/audio/menu-music.ogg")
-        pygame.mixer.music.set_volume(settings.get_setting("music"))
+    def play_music():
+        """Play annoying music."""
+        resources.load_music("menu-music.ogg")
         pygame.mixer.music.play(-1)
 
     def process_input(self, events, pressed_keys):
@@ -711,7 +644,7 @@ class SceneMenu(SceneBase):
         screen.blit(overlay, overlay_rect)
 
         # Title
-        font = resources.get_font("menu-title")
+        font = resources.get_font("title175")
         rd_text, rd_rect = render_text("SNAKE", font, BLACK)
         rd_rect.centerx, rd_rect.y = width//2, 60
         screen.blit(rd_text, rd_rect)
@@ -733,11 +666,11 @@ class SceneMenu(SceneBase):
             if i == self.index:
                 # Selected
                 color = APPLE_COLOR
-                font = resources.get_font("hippy50")
+                font = resources.get_font("round50")
             else:
                 # Inactive
                 color = BLACK
-                font = resources.get_font("hippy40")
+                font = resources.get_font("round40")
 
             rd_text, rd_rect = render_text(option[0], font, color)
             rd_rect.centerx, rd_rect.centery = (width//2, pos_y+60*i)

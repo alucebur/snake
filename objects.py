@@ -46,7 +46,7 @@ class Snake:
     def __init__(self):
         self.direction = None
         # FIFO queue, buffer of direction changes
-        self.direction_queue = queue.Queue(maxsize=3)
+        self.direction_queue = queue.Queue(maxsize=5)
         self.timer = 0
         self.vel = 10
         self.growing = False

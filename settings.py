@@ -3,6 +3,9 @@ import json
 import random
 from typing import Any, List
 
+import pygame
+
+import resources
 from consts import CONFIG_FILE, PUN_FILE, DEFAULT_SETTINGS, DEFAULT_KEYMAPPING
 
 settings = DEFAULT_SETTINGS
@@ -89,6 +92,10 @@ def load_config():
         keymapping['direction'] = {}
         for key, value in config['keymapping']['direction'].items():
             keymapping['direction'][int(key)] = value
+
+        # Set volumes
+        resources.set_volume(get_setting("sound"))
+        pygame.mixer.music.set_volume(get_setting("music"))
 
 
 def load_jokes():
