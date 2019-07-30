@@ -8,7 +8,7 @@ This is a Python implementation of the classic game "Snake", with a menu system 
 - [Requirements](#requirements)
 - [Installation](#installation)
 - [Screenshots](#screenshots)
-- [Credits](#credits)
+- [Asset credits](#asset-credits)
 - [License](#license)
 
 ---
@@ -81,42 +81,42 @@ Enjoy.
 ---
 
 ### Screenshots
-![Menu](screenshots/1_tn.png)![Game](screenshots/2_tn.png)
-![Classic look](screenshots/3_tn.png)![Pause](screenshots/4_tn.png)
-![Gameover](screenshots/5_tn.png)![Highscores](screenshots/6_tn.png)
-![Settings](screenshots/7_tn.png)![Key binds](screenshots/8_tn.png)
+<img src="screenshots/1_tn.png" width="256" style="margin: 0px 10px" /><img src="screenshots/2_tn.png" width="256" />
+<img src="screenshots/3_tn.png" width="256" style="margin: 0px 10px" /><img src="screenshots/4_tn.png" width="256" />
+<img src="screenshots/5_tn.png" width="256" style="margin: 0px 10px" /><img src="screenshots/6_tn.png" width="256" />
+<img src="screenshots/7_tn.png" width="256" style="margin: 0px 10px" /><img src="screenshots/8_tn.png" width="256" />
 
 ---
 
-### Credits
-* images:
-    * icon.png: (modified from original) kungfu4000 in https://opengameart.org/content/snake-enemy-kit-32x32 under public domain.
-    * tile-game1.png, tile-game2.png: surfacecurve in https://opengameart.org/content/grass-textureseamless-2d under public domain.
-    * bg-menu1.png, bg-menu1b.png, bg-menu2.png, bg-menu2b.png: Nidhoggn in https://opengameart.org/content/backgrounds-3 under public domain.
+### Asset credits
+* **images**:
+    * ***icon.png***: (modified from original) kungfu4000 in [opengameart.org](https://opengameart.org/content/snake-enemy-kit-32x32) under Public Domain.
+    * ***tile-game1.png, tile-game2.png***: surfacecurve in [opengameart.org](https://opengameart.org/content/grass-textureseamless-2d) under Public Domain.
+    * ***bg-menu1.png, bg-menu1b.png, bg-menu2.png, bg-menu2b.png***: Nidhoggn in [opengameart.org](https://opengameart.org/content/backgrounds-3) under Public Domain.
 
-* fonts:
-    * AurulentSansMono-Regular.otf: Stephen G. Hartke in https://www.dafont.com/es/aurulent-sans-mono.font under Public Domain/GPL/OFL.
-    * Excalibur Nouveau.ttf: Typo-Graf in https://www.dafont.com/es/excalibur-nouveau.font under Public Domain.
-    * HanSrf.ttf: Gerhard Großmann in https://www.dafont.com/es/handserif.font under Public Domain/GPL/OFL.
-    * Jacked.ttf: Lucas Cobb Designs in https://www.dafont.com/es/jacked.font under Public Domain/GPL/OFL.
+* **fonts**:
+    * ***AurulentSansMono-Regular.otf***: Stephen G. Hartke in [dafont.com](https://www.dafont.com/es/aurulent-sans-mono.font) under Public Domain/GPL/OFL.
+    * ***Excalibur Nouveau.ttf***: Typo-Graf in [dafont.com](https://www.dafont.com/es/excalibur-nouveau.font) under Public Domain.
+    * ***HanSrf.ttf***: Gerhard Großmann in [dafont.com](https://www.dafont.com/es/handserif.font) under Public Domain/GPL/OFL.
+    * ***Jacked.ttf***: Lucas Cobb Designs in [dafont.com](https://www.dafont.com/es/jacked.font) under Public Domain/GPL/OFL.
 
-* sounds and music:
-    * menu-accept.wav: (modified from original) Kibblesbob in http://soundbible.com/1785-Skorpion.html under Public Domain.
-    * menu-select.wav: (modified from original) Lisa Redfern in http://soundbible.com/2082-Hammering.html under Public Domain.
-    * snake-bite.wav: (modified from original) GregoryWeir in http://soundbible.com/1394-Dragon-Bite.html under Public Domain.
-    * snake-crash.wav: (modified from original) Vladimir in http://soundbible.com/1952-Punch-Or-Whack.html under Public Domain.
-    * menu-music.ogg: (modified from original) aldo in http://soundbible.com/1546-Hiking-A-Trail.html under Public Domain.
-    * snake-music-Rafael-Krux.ogg: (modified from original) Rafael Krux from https://freepd.com/epic.php (Video Game Blockbuster) under Public Domain.
+* **sounds and music**:
+    * ***menu-accept.wav***: (modified from original) Kibblesbob in [soundbible.com](http://soundbible.com/1785-Skorpion.html) under Public Domain.
+    * ***menu-select.wav***: (modified from original) Lisa Redfern in [soundbible.com](http://soundbible.com/2082-Hammering.html) under Public Domain.
+    * ***snake-bite.wav***: (modified from original) GregoryWeir in [soundbible.com](http://soundbible.com/1394-Dragon-Bite.html) under Public Domain.
+    * ***snake-crash.wav***: (modified from original) Vladimir in [soundbible.com](http://soundbible.com/1952-Punch-Or-Whack.html) under Public Domain.
+    * ***menu-music.ogg***: (modified from original) aldo in [soundbible.com](http://soundbible.com/1546-Hiking-A-Trail.html) under Public Domain.
+    * ***snake-music-Rafael-Krux.ogg***: (modified from original) Rafael Krux in [freepd.com](https://freepd.com/epic.php) *(Video Game Blockbuster)* under Public Domain.
 
-* sprites:
-    * snake-sprites.png: (modified from original) rembound in https://github.com/rembound/Snake-Game-HTML5 under GPLv3.
+* **sprites**:
+    * ***snake-sprites.png***: (modified from original) rembound in [github.com/rembound](https://github.com/rembound/Snake-Game-HTML5) under GPLv3.
 
 ---
 
 ### License
 The code of this project is Unlicensed, feel free to use it as you want.
 
-Audios, fonts and images used in this project are under Public Domain or a free license, check [credits section](#credits)  for more details about them.
+Audios, fonts and images used in this project are under Public Domain or a free license, check [credits section](#asset-credits)  for more details.
 
 Snake and apple sprites were modified from the original, and are under the following GPLv3 license:
 
