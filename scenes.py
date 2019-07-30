@@ -437,6 +437,7 @@ class SceneSettings(SceneBase):
                     resources.get_sound("menu-accept").play()
                     # Change controls
                     if self.index == 3:
+                        self.save_config()
                         self.switch_to_scene(SceneSettingsControls)
 
                     # Return to Main Menu
