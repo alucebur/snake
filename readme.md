@@ -82,8 +82,11 @@ Enjoy.
 
 ### Screenshots
 <img src="docs/screenshots/1_tn.png" width="256" style="margin: 3px 5px" /><img src="docs/screenshots/2_tn.png" width="256" style="margin: 3px 5px" />
+
 <img src="docs/screenshots/3_tn.png" width="256" style="margin: 3px 5px" /><img src="docs/screenshots/4_tn.png" width="256" style="margin: 3px 5px" />
+
 <img src="docs/screenshots/5_tn.png" width="256" style="margin: 3px 5px" /><img src="docs/screenshots/6_tn.png" width="256" style="margin: 3px 5px" />
+
 <img src="docs/screenshots/7_tn.png" width="256" style="margin: 3px 5px" /><img src="docs/screenshots/8_tn.png" width="256" style="margin: 3px 5px" />
 
 ---

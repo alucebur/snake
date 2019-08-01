@@ -57,7 +57,7 @@ def run_game(width: int, height: int, fps: int, starting_scene: SceneBase):
                 quit_attempt = True
             elif event.type == pygame.KEYDOWN:
                 alt_pressed = (pressed_keys[pygame.K_LALT] or
-                               pressed_keys[pygame.K_LALT])
+                               pressed_keys[pygame.K_RALT])
                 if event.key == settings.get_key("exit"):
                     quit_attempt = True
                 elif event.key == pygame.K_F4 and alt_pressed:

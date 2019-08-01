@@ -16,7 +16,7 @@ def render_text(text: str, font: pygame.freetype.Font,
     return text_surf, text_rect
 
 
-@lru_cache(maxsize=32)
+@lru_cache(maxsize=8)
 def render_wrapped_text(text: str, font: pygame.freetype.Font,
                         color: Color, centered: bool, offset_y: int,
                         max_width: int) -> Tuple[pygame.Surface, pygame.Rect]:
@@ -76,7 +76,7 @@ def get_surface(size: Tuple[int, int], color: Color,
     return surface
 
 
-@lru_cache(maxsize=3)
+@lru_cache(maxsize=4)
 def build_background(tile: pygame.Surface) -> pygame.Surface:
     """Return a screen-sized surface filled with a repeated given tile."""
     # Get screen and tile sizes

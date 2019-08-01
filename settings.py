@@ -39,6 +39,7 @@ def get_key(action: str) -> Any:
 
 def get_keybindings() -> dict:
     """Return a copy of the dictionary with the key bindings."""
+    # dict.copy creates a shallow copy, we need a deep copy
     return deepcopy(keymapping)
 
 
